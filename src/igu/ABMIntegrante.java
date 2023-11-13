@@ -2,6 +2,8 @@ package igu;
 
 import java.awt.EventQueue;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -14,7 +16,10 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 
 import model.Cargos;
+import model.Empleado;
+import model.Funcionario;
 import model.Funciones;
+import model.Integrante;
 import model.Organismo;
 
 import javax.swing.JScrollPane;
@@ -32,6 +37,7 @@ import javax.swing.JButton;
 public class ABMIntegrante extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private IntegranteService intser;
 	private JPanel contentPane;
 	private JTable tblIntegrantes;
 	private DefaultTableModel model;
@@ -71,6 +77,8 @@ public class ABMIntegrante extends JFrame {
 	 * Create the frame.
 	 */
 	public ABMIntegrante(IntegranteService intser) {
+		this.intser=intser;
+		intser.integrantesAMemoria();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 955, 646);
 		contentPane = new JPanel();
@@ -280,6 +288,8 @@ public class ABMIntegrante extends JFrame {
 				ftxtFechaPosecion.setText("");
 				chkbxAfiliado.setSelected(false);
 				chkbxAfiliado.setSelected(false);
+				vaciarTabla(model.getRowCount());
+				llenarTabla();
 			}
 		});
 	    
@@ -306,18 +316,55 @@ public class ABMIntegrante extends JFrame {
         };
         tblIntegrantes.setModel(model);
         tblIntegrantes.setRowHeight(30);
-        model.addColumn("NRO LEGAJO");
-        model.addColumn("NOMBRE");
-        model.addColumn("APELLIDO");
-        model.addColumn("TIPO");
-        model.addColumn("DNI");
-        model.addColumn("AÑO NACIMIENTO");
-        model.addColumn("ES AFILIADO");
-        model.addColumn("FUNCION");
-        model.addColumn("ACUERDO LEGIS.");
-        model.addColumn("CARGO");
+        model.addColumn("NRO LEGAJO"); //0
+        model.addColumn("NOMBRE"); //1
+        model.addColumn("APELLIDO"); //2
+        model.addColumn("TIPO"); //3
+        model.addColumn("DNI"); //4
+        model.addColumn("AÑO NACIMIENTO"); //5
+        model.addColumn("ES AFILIADO"); //6
+        model.addColumn("FUNCION"); //7
+        model.addColumn("ACUERDO LEGIS."); //8
+        model.addColumn("CARGO"); //9
         
-      
+        llenarTabla();
         scrollPane.setViewportView(tblIntegrantes);
+	}
+	
+	public void llenarTabla() {
+		System.out.println("HOLA");
+		
+		HashMap<Long, Integrante>integrantes=intser.getIntegrantes();
+		
+		for (Map.Entry<Long, Integrante> entry : integrantes.entrySet()) {
+			Object[] fila = new Object[10];
+			final Long id=entry.getKey();
+			final Integrante inte=entry.getValue();
+			fila[0]=inte.getNroLegajo();
+			fila[1]=inte.getNombre();
+			fila[2]=inte.getApellido();
+			if(inte instanceof Empleado) {
+				Empleado emp = (Empleado) inte;
+				fila[3]="Empleado";
+				fila[6]= emp.isEsAfiliado() ? "Si" : "No";
+		        fila[7] = emp.getFuncion().name();
+			}else {
+				Funcionario fun = (Funcionario)inte;
+				fila[3]="Funcionario";
+				fila[8] = fun.isAcuerdoLegislatico() ? "Si" : "NO";
+			    fila[9] = fun.getCargo().name();
+			}
+			fila[4]=inte.getDni();
+			fila[5]=inte.getAñoNacimiento();
+
+			model.addRow(fila);
+		}
+		 tblIntegrantes.revalidate();
+		 tblIntegrantes.repaint();
+	}
+	public void vaciarTabla(int cantFilas) {
+		for (int i = cantFilas - 1; i >= 0; i--) {
+	        model.removeRow(i);
+	    }
 	}
 }

@@ -92,7 +92,7 @@ public class IntegrantePersistence {
                 	 String cargo=resultSet.getString("cargo");
                 	 java.sql.Date sqlDate = new java.sql.Date(fechaPosecion.getTime());
                 	 Funcionario fun = new Funcionario(id, nroLegajo, anioNacimiento, nombre, apellido, dni, edad,
-                			 buscarOrganismo(id_organismo), acuerdoLegislativo, stringACargos(cargo), sqlDate);
+                			 null, acuerdoLegislativo, stringACargos(cargo), sqlDate);
                 	 integrantes.put(fun.getId(), fun);
                  }else{
                 	 boolean esAfiliado = resultSet.getBoolean("es_afiliado");
@@ -100,7 +100,7 @@ public class IntegrantePersistence {
                 	 String funcion = resultSet.getString("funcion");
                 	 java.sql.Date sqlDate = new java.sql.Date(fechaIngreso.getTime());
                 	 Empleado emp = new Empleado (id, nroLegajo, anioNacimiento,  nombre, apellido, dni, edad,
-                				buscarOrganismo(id_organismo), esAfiliado, sqlDate,  stringAFunciones(funcion));
+                				null, esAfiliado, sqlDate,  stringAFunciones(funcion));
                 	 integrantes.put(emp.getId(), emp);
                  }
                
