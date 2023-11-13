@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.HashMap;
 
 import model.Cargos;
@@ -27,7 +28,7 @@ public class IntegrantePersistence {
             String sql = "INSERT INTO integrante (nombre, apellido, nro_legajo, edad, dni, año_nacimiento,"
             		+ " tipo_integrante, es_afiliado, fecha_ingreso, funcion, fecha_posecion, acuerdo_legislativo,"
             		+ " cargo, id_organismo, circunscripcion)"
-            		+ "VALUES(?,?,?,?,?,?,?,?);";
+            		+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, inte.getNombre());
             preparedStatement.setString(2, inte.getApellido() );
@@ -43,22 +44,22 @@ public class IntegrantePersistence {
             	preparedStatement.setDate(9, null);
             	preparedStatement.setString(10, null);
             	
-            	preparedStatement.setDate(11, (java.sql.Date) fun.getFechaPosecion());
+            	preparedStatement.setDate(11, new java.sql.Date(fun.getFechaPosecion().getTime()));
             	preparedStatement.setBoolean(12, fun.isAcuerdoLegislatico());
             	preparedStatement.setString(13, fun.getCargo().name());
             }else {
             	Empleado emp = (Empleado)inte;
             	preparedStatement.setString(7, "Empleado");
             	preparedStatement.setBoolean(8, emp.isEsAfiliado());
-            	preparedStatement.setDate(9, (java.sql.Date) emp.getFechaIngreso());
+            	preparedStatement.setDate(9, new java.sql.Date(emp.getFechaIngreso().getTime()));
             	preparedStatement.setString(10, emp.getFuncion().name());
             	
             	preparedStatement.setDate(11, null);
-            	preparedStatement.setNull(8, java.sql.Types.BOOLEAN);
+            	preparedStatement.setNull(12, java.sql.Types.BOOLEAN);
             	preparedStatement.setString(13, null);
             }
             
-            preparedStatement.setLong(14, inte.getOrganismo().getId());
+            preparedStatement.setNull(14,  /*inte.getOrganismo().getId()*/Types.BIGINT);
             preparedStatement.setString(15,circunscripcion);
             preparedStatement.executeUpdate();
     	}catch(SQLException e) {

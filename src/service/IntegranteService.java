@@ -43,6 +43,7 @@ public class IntegranteService {
 				emp.setFechaIngreso(formato.parse(fechaIngreso));
 			} catch (ParseException e) {
 				e.printStackTrace();
+				emp.setFechaIngreso(null);
 			}
 			emp.setEsAfiliado(afiliado);
 			emp.setFuncion(stringAFunciones(funcion));
@@ -62,6 +63,7 @@ public class IntegranteService {
 				fun.setFechaPosecion(formato.parse(fechaPosecion));
 			} catch (ParseException e) {
 				e.printStackTrace();
+				fun.setFechaPosecion(null);
 			}
 			fun.setAcuerdoLegislatico(acuerdoLegislativo);
 			fun.setCargo(stringACargos(cargo));

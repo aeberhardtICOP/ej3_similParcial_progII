@@ -263,14 +263,23 @@ public class ABMIntegrante extends JFrame {
 				String añoNacimiento = txtAñoNac.getText();
 				Organismo organismo = null;
 				String fechaPosecion = ftxtFechaPosecion.getText();
-				boolean acuerdoLegislativo = chkbxAcuerdoLegis.isSelected();
+				boolean acuerdoLegislativo = chkbxAfiliado.isSelected();
 				String cargo = cmbxCargo.getSelectedItem().toString();
 				String fechaIngresoString = ftxtFechaIngreso.getText();
 				boolean afiliado = chkbxAfiliado.isSelected();
 				String funcion = cmbxFuncion.getSelectedItem().toString();
 				
 				intser.crearIntegrante(nroLegajo, tipo, circunscripcion, nombre, apellido, dni, edad, añoNacimiento, organismo, fechaPosecion, acuerdoLegislativo, cargo, fechaIngresoString, afiliado, funcion);
-				
+				txtNroLegajo.setText("");
+				txtNombre.setText("");
+				txtApellido.setText("");
+				txtDni.setText("");
+				txtEdad.setText("");
+				txtAñoNac.setText("");
+				ftxtFechaIngreso.setText("");
+				ftxtFechaPosecion.setText("");
+				chkbxAfiliado.setSelected(false);
+				chkbxAfiliado.setSelected(false);
 			}
 		});
 	    
