@@ -2,6 +2,7 @@ package igu;
 
 import java.awt.EventQueue;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import service.IntegranteService;
+import service.OrganizacionService;
+
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultFormatterFactory;
@@ -38,6 +41,7 @@ public class ABMIntegrante extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private IntegranteService intser;
+	private OrganizacionService orgser;
 	private JPanel contentPane;
 	private JTable tblIntegrantes;
 	private DefaultTableModel model;
@@ -64,7 +68,7 @@ public class ABMIntegrante extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ABMIntegrante frame = new ABMIntegrante(new IntegranteService());
+					ABMIntegrante frame = new ABMIntegrante(new IntegranteService(), new OrganizacionService());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -76,9 +80,11 @@ public class ABMIntegrante extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ABMIntegrante(IntegranteService intser) {
+	public ABMIntegrante(IntegranteService intser, OrganizacionService orgser) {
 		this.intser=intser;
+		this.orgser=orgser;
 		intser.integrantesAMemoria();
+		orgser.organismosAMemoria();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 955, 646);
 		contentPane = new JPanel();
@@ -176,6 +182,12 @@ public class ABMIntegrante extends JFrame {
 		panelAltaInt.add(cmbxTipo);
 		
 		JComboBox cmbxOrganizacion = new JComboBox();
+		{
+			
+			for (String nombre : listaOrganismos()) {
+				cmbxOrganizacion.addItem(nombre);
+			}
+		}
 		cmbxOrganizacion.setBounds(180, 238, 86, 22);
 		panelAltaInt.add(cmbxOrganizacion);
 		
@@ -246,7 +258,7 @@ public class ABMIntegrante extends JFrame {
 		panelAltaInt.add(ftxtFechaIngreso);
 		try {
 		    MaskFormatter dateFormatter = new MaskFormatter("##/##/####");
-		    dateFormatter.setPlaceholderCharacter('_'); // Carácter de marcador de posición
+		    dateFormatter.setPlaceholderCharacter('_'); 
 		    DefaultFormatterFactory formatterFactory = new DefaultFormatterFactory(dateFormatter);
 
 		    ftxtFechaIngreso.setFormatterFactory(formatterFactory);    
@@ -269,7 +281,7 @@ public class ABMIntegrante extends JFrame {
 				String dni = txtDni.getText();
 				String edad = txtEdad.getText();
 				String añoNacimiento = txtAñoNac.getText();
-				Organismo organismo = null;
+				String organismo = cmbxOrganizacion.getSelectedItem().toString();
 				String fechaPosecion = ftxtFechaPosecion.getText();
 				boolean acuerdoLegislativo = chkbxAfiliado.isSelected();
 				String cargo = cmbxCargo.getSelectedItem().toString();
@@ -366,5 +378,13 @@ public class ABMIntegrante extends JFrame {
 		for (int i = cantFilas - 1; i >= 0; i--) {
 	        model.removeRow(i);
 	    }
+	}
+	public ArrayList<String> listaOrganismos(){
+		HashMap<Long, Organismo>organismos=orgser.obtenerOrganismos();
+		ArrayList<String>nombresOrganismos=new ArrayList<String>();
+		for(Map.Entry<Long, Organismo> entry : organismos.entrySet()) {
+			nombresOrganismos.add(entry.getValue().getNombre());
+		}
+		return nombresOrganismos;
 	}
 }

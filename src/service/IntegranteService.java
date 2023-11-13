@@ -26,7 +26,7 @@ public class IntegranteService {
 	}
 	
 	public void crearIntegrante(String nroLegajo, String tipo, String circunscripcion, String nombre, String apellido, String dni, 
-			String edad, String añoNacimiento, Organismo organizacion, String fechaPosecion, boolean acuerdoLegislativo, String cargo,
+			String edad, String añoNacimiento, String organismo, String fechaPosecion, boolean acuerdoLegislativo, String cargo,
 			String fechaIngreso, boolean afiliado, String funcion) {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		if(tipo.equals("Empleado")) {
@@ -37,7 +37,8 @@ public class IntegranteService {
 			emp.setDni(Integer.parseInt(dni));
 			emp.setEdad(Integer.parseInt(edad));
 			emp.setAñoNacimiento(Integer.parseInt(añoNacimiento));
-			emp.setOrganismo(organizacion);
+			emp.setOrganismo(organismoPorNombre(organismo));
+			System.out.println(emp.getOrganismo().getNombre());
 			
 			try {
 				emp.setFechaIngreso(formato.parse(fechaIngreso));
@@ -48,7 +49,7 @@ public class IntegranteService {
 			emp.setEsAfiliado(afiliado);
 			emp.setFuncion(stringAFunciones(funcion));
 			intper.crearIntegrante(emp, circunscripcion);
-			this.integrantes.put((long) intper.ultimoId(), emp);
+			this.integrantes.put((long) intper.ultimoId()+1, emp);
 		}else if(tipo.equals("Funcionario")) {
 			Funcionario fun = new Funcionario();
 			fun.setNroLegajo(Integer.parseInt(nroLegajo));
@@ -57,7 +58,7 @@ public class IntegranteService {
 			fun.setDni(Integer.parseInt(dni));
 			fun.setEdad(Integer.parseInt(edad));
 			fun.setAñoNacimiento(Integer.parseInt(añoNacimiento));
-			fun.setOrganismo(organizacion);
+			fun.setOrganismo(organismoPorNombre(organismo));
 			
 			try {
 				fun.setFechaPosecion(formato.parse(fechaPosecion));
@@ -68,12 +69,17 @@ public class IntegranteService {
 			fun.setAcuerdoLegislatico(acuerdoLegislativo);
 			fun.setCargo(stringACargos(cargo));
 			intper.crearIntegrante(fun, circunscripcion);
-			this.integrantes.put((long) intper.ultimoId(), fun);
+			this.integrantes.put((long) intper.ultimoId()+1, fun);
 		}
 	}
 	
 	public HashMap<Long, Integrante> getIntegrantes(){
 		return this.integrantes;
+	}
+	
+	public Organismo organismoPorNombre(String nombre) {
+		return intper.buscarOrganismoPorNombre(nombre);
+		
 	}
 	
 	 public Cargos stringACargos(String cargo) {

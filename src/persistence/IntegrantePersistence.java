@@ -59,7 +59,7 @@ public class IntegrantePersistence {
             	preparedStatement.setString(13, null);
             }
             
-            preparedStatement.setNull(14,  /*inte.getOrganismo().getId()*/Types.BIGINT);
+            preparedStatement.setLong(14,  inte.getOrganismo().getId());
             preparedStatement.setString(15,circunscripcion);
             preparedStatement.executeUpdate();
     	}catch(SQLException e) {
@@ -183,7 +183,38 @@ public class IntegrantePersistence {
             e.printStackTrace();
         }
     }
-    
+    public Organismo buscarOrganismoPorNombre(String nombreOrg) {
+    	try {
+    		Organismo org = new Organismo();
+    		connection = con.conectar();
+            String sql = "SELECT * FROM organismo WHERE nombre = ?;";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, nombreOrg); // Configurar el parámetro antes de ejecutar la consulta
+
+            resultSet = preparedStatement.executeQuery();
+            
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+            	Long idOrganism = resultSet.getLong("id_organismo");
+                String nombre = resultSet.getString("nombre");
+                Date fechaCreacion = resultSet.getDate("fecha_creacion");
+                java.sql.Date sqlDate = new java.sql.Date(fechaCreacion.getTime());
+                String domicilio = resultSet.getString("domicilio");
+                
+                org.setId(idOrganism);
+                org.setNombre(nombre);
+                org.setFechaCreaciom(sqlDate);
+                org.setDomicilio(domicilio);
+                
+            }
+            return org;
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    		return null;
+    	}finally {
+    		cerrarRecursos(connection, preparedStatement, resultSet);
+    	}
+    }
     public Organismo buscarOrganismo(Long idOrganismo) {
 		try {
 			connection = con.conectar();
